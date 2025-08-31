@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Output Alignment Protocol (OAP) – Practical Guide for Safer LLM Outputs</title>
+  <meta name="description" content="The Output Alignment Protocol (OAP) is an open framework for aligning Large Language Model (LLM) outputs with user intent, ethics, and security. Single‑file website with overview, principles, integration steps, checklists, FAQs and resources." />
+  <meta name="author" content="Shay Weiss" />
+  <meta name="keywords" content="Output Alignment Protocol,OAP,LLM,AI Security,AI Safety,AI Governance,Responsible AI,Prompt Injection,Indirect Prompt Injection,RAG,RAG vulnerabilities,NLP,Trustworthy AI" />
+  <meta property="og:title" content="The Output Alignment Protocol (OAP) – Practical Guide for Safer LLM Outputs" />
+  <meta property="og:description" content="Open framework to keep LLM outputs aligned with intent, ethics, and security. Includes steps, controls, and checklists." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'><rect width='100%' height='100%' fill='%23121a24'/><text x='50%' y='52%' text-anchor='middle' fill='white' font-size='64' font-family='Arial'>OAP</text></svg>"/>
+  <meta name="twitter:card" content="summary_large_image" />
+  
+  <!-- JSON-LD Schema.org (TechArticle) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "The Output Alignment Protocol (OAP) – Practical Guide for Safer LLM Outputs",
+    "author": {"@type": "Person", "name": "Shay Weiss"},
+    "about": ["AI Security", "Large Language Models", "Prompt Injection", "RAG Vulnerabilities"],
+    "keywords": "Output Alignment Protocol,OAP,LLM,AI Security,Responsible AI,Prompt Injection,Indirect Prompt Injection,RAG",
+    "datePublished": "2025-08-31"
+  }
+  </script>
+
+  <style>
+    :root{
+      --bg: #0b1118; --panel: #0f1722; --muted:#93a4b3; --text:#e6eef6; --brand:#60a5fa; --brand-2:#22d3ee; --ok:#34d399; --warn:#f59e0b; --bad:#ef4444; --card:#0e1520; --border:#1f2a38;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02);
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f7fbff; --panel:#ffffff; --card:#ffffff; --text:#0c1220; --muted:#4b5563; --border:#e5edf6; --shadow: 0 10px 24px rgba(2,12,27,.06); }
+      header.nav{ backdrop-filter:saturate(120%) blur(8px); }
+    }
+    *{ box-sizing:border-box }
+    html{ scroll-behavior:smooth }
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; color:var(--text); background: radial-gradient(1200px 700px at 20% -10%, rgba(96,165,250,.15), transparent 60%), radial-gradient(900px 600px at 90% 10%, rgba(34,211,238,.16), transparent 65%), var(--bg); }
+    a{ color:var(--brand); text-decoration:none }
+    a:hover{ text-decoration:underline }
+
+    header.nav{ position:sticky; top:0; z-index:50; border-bottom:1px solid var(--border); background: linear-gradient(180deg, rgba(11,17,24,.9), rgba(11,17,24,.7)); }
+    .nav-wrap{ max-width:1120px; margin:0 auto; display:flex; align-items:center; gap:16px; padding:10px 16px; }
+    .logo{ font-weight:800; letter-spacing:.3px; display:flex; align-items:center; gap:10px }
+    .logo .dot{ width:10px; height:10px; border-radius:999px; background:linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow:0 0 10px rgba(34,211,238,.8) }
+    nav a{ margin:0 10px; padding:8px 10px; border-radius:10px }
+    nav a:hover{ background:rgba(255,255,255,.06) }
+
+    .hero{ max-width:1120px; margin:40px auto 24px; padding:22px 16px; display:grid; grid-template-columns:1.2fr 1fr; gap:28px; align-items:center }
+    .hero-card{ background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid var(--border); border-radius:var(--radius); padding:28px; box-shadow:var(--shadow) }
+    .kicker{ color:var(--muted); text-transform:uppercase; letter-spacing:.2em; font-size:.78rem }
+    h1{ font-size: clamp(28px, 4vw, 44px); margin:.2em 0 .4em; line-height:1.1 }
+    .lead{ color:var(--muted); font-size: clamp(15px, 1.8vw, 18px) }
+    .cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:18px }
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 16px; border-radius:12px; background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#00131f; font-weight:700; border:none; box-shadow:0 10px 24px rgba(34,211,238,.25) }
+    .btn.secondary{ background:transparent; color:var(--text); border:1px solid var(--border) }
+
+    .grid{ max-width:1120px; margin:0 auto; padding:8px 16px 60px; }
+    section{ margin-top:36px }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow) }
+    h2{ font-size: clamp(22px, 3vw, 30px); margin: 0 0 14px }
+    h3{ margin: 20px 0 10px }
+    .two{ display:grid; grid-template-columns:1fr 1fr; gap:18px }
+    .three{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px }
+    .stat{ padding:18px; background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border:1px dashed var(--border); border-radius:12px; color:var(--muted) }
+
+    ul{ margin:10px 0 0 18px }
+    .badge{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:.72rem; border:1px solid var(--border); color:var(--muted) }
+    .toc{ position:sticky; top:70px; align-self:start }
+
+    .footer{ border-top:1px solid var(--border); padding:28px 16px; color:var(--muted) }
+    .small{ font-size:.9rem }
+
+    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.85rem; padding:2px 6px; border:1px solid var(--border); border-bottom-width:3px; border-radius:6px; background:rgba(255,255,255,.03) }
+
+    @media (max-width: 920px){
+      .hero{ grid-template-columns:1fr }
+      .two{ grid-template-columns:1fr }
+      .three{ grid-template-columns:1fr }
+      nav{ display:none }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-wrap">
+      <div class="logo"><span class="dot"></span> <span>OAP – Output Alignment Protocol</span></div>
+      <nav aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#principles">Principles</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#threats">Threats</a>
+        <a href="#controls">Controls</a>
+        <a href="#checklists">Checklists</a>
+        <a href="#faq">FAQ</a>
+        <a href="#resources">Resources</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <div class="kicker">Open Framework • Responsible AI</div>
+        <h1>The Output Alignment Protocol (OAP)</h1>
+        <p class="lead">A practical method to keep Large Language Model (LLM) outputs aligned with <strong>user intent</strong>, <strong>security policy</strong>, and <strong>organizational ethics</strong>—from prompt to response to post‑processing.</p>
+        <div class="cta-row">
+          <a class="btn" href="#download">Download PDF</a>
+          <a class="btn secondary" href="#pipeline">See the Pipeline</a>
+        </div>
+      </div>
+      <aside class="card toc" aria-label="On this page">
+        <div class="badge">Table of contents</div>
+        <ul>
+          <li><a href="#about">About OAP</a></li>
+          <li><a href="#principles">Core Principles</a></li>
+          <li><a href="#pipeline">How it Works</a></li>
+          <li><a href="#threats">Threat Model</a></li>
+          <li><a href="#controls">Controls & Guardrails</a></li>
+          <li><a href="#use-cases">Use Cases</a></li>
+          <li><a href="#checklists">Implementation Checklists</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#resources">Resources</a></li>
+        </ul>
+      </aside>
+    </section>
+
+    <div class="grid">
+      <section id="about" class="card">
+        <h2>About OAP</h2>
+        <p>The Output Alignment Protocol (OAP) is an <strong>open, community‑driven framework</strong> that provides practical guidance for aligning model outputs with intended use. It complements model‑side safety with <em>system‑level</em> controls—spanning prompts, tools, retrieval, post‑processing, and human review.</p>
+        <div class="two">
+          <div class="stat"><strong>Goal</strong><br/>Deliver <em>useful</em> outputs that are also <em>safe</em>, <em>policy‑compliant</em>, and <em>auditable</em>.</div>
+          <div class="stat"><strong>Who it’s for</strong><br/>Engineering & MLOps teams, product leaders, researchers, governance & security practitioners.</div>
+        </div>
+      </section>
+
+      <section id="principles" class="card">
+        <h2>Core Principles</h2>
+        <ol>
+          <li><strong>Intent Fidelity</strong> – preserve the user’s lawful task, context, and constraints through every step.</li>
+          <li><strong>Defense‑in‑Depth</strong> – combine controls (prompt hygiene, retrieval filters, tools, and post‑processing) rather than relying on a single guard.</li>
+          <li><strong>Least‑Privilege Data Access</strong> – retrieval and tools expose only the minimum necessary information.</li>
+          <li><strong>Verifiability</strong> – ground outputs with citations, signatures, or checksums where possible.</li>
+          <li><strong>Human‑in‑the‑Loop</strong> – require review for high‑risk or irreversible actions.</li>
+          <li><strong>Observability & Audit</strong> – log decisions, inputs/outputs, and control verdicts for traceability.</li>
+          <li><strong>Fail‑Safe Defaults</strong> – degrade gracefully (ask for clarification, block, or route to human) when risk is uncertain.</li>
+        </ol>
+      </section>
+
+      <section id="pipeline" class="card">
+        <h2>How OAP Works (Pipeline Overview)</h2>
+        <p>OAP inserts lightweight stages around model calls. Each stage can be enforced in code, in your gateway, or via orchestrators/agents.</p>
+        <div class="three">
+          <div>
+            <h3>1) Input Gate</h3>
+            <ul>
+              <li>Sanitize prompts (strip HTML/JS, neutralize <span class="kbd">\n\nSYSTEM:</span> patterns, escape instructions in retrieved docs).</li>
+              <li>Classify intent and sensitivity; apply policy templates by use‑case.</li>
+              <li>Detect injection patterns (role override, file://, http://, <em>exfiltration bait</em>).</li>
+            </ul>
+          </div>
+          <div>
+            <h3>2) Retrieval & Tools</h3>
+            <ul>
+              <li>Context filters: provenance allowlist, freshness, PII/PHI scrubs.</li>
+              <li>Tools run under <em>scoped credentials</em> with rate & domain limits.</li>
+              <li>Attach <em>policy hints</em> (“never execute untrusted links; summarize code, don’t run”).</li>
+            </ul>
+          </div>
+          <div>
+            <h3>3) Output Gate</h3>
+            <ul>
+              <li>Self‑check and external checkers (toxicity, secrets, hallucination heuristics).</li>
+              <li>Evidence requirement: include citations when claim‑like content appears.</li>
+              <li>Redaction & formatting; sign results; route high‑risk to human review.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="threats" class="card">
+        <h2>Threat Model (Examples)</h2>
+        <div class="two">
+          <div>
+            <h3>Indirect Prompt Injection (IPI)</h3>
+            <ul>
+              <li>Malicious content planted in web pages, PDFs, emails, or KBs attempts to override system instructions.</li>
+              <li>Mitigation: <em>content isolation</em>, HTML‑to‑text with allowlists, cue shielding, and link execution bans.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>RAG Vulnerabilities</h3>
+            <ul>
+              <li>Inconsistent provenance, stale sources, or rankers that surface adversarial text.</li>
+              <li>Mitigation: per‑source trust scores, freshness caps, domain allowlists, and <em>evidence‑bound prompting</em>.</li>
+            </ul>
+          </div>
+        </div>
+        <h3>Other Risks</h3>
+        <ul>
+          <li>Jailbreaks & role confusion</li>
+          <li>Data exfiltration via tool calls / connectors</li>
+          <li>Leakage of secrets or regulated data</li>
+          <li>Over‑reliance without human control (automation bias)</li>
+        </ul>
+      </section>
+
+      <section id="controls" class="card">
+        <h2>Controls & Guardrails</h2>
+        <div class="three">
+          <div>
+            <h3>Prompt & Policy</h3>
+            <ul>
+              <li>System prompts embed role, boundaries, and refusal criteria.</li>
+              <li>Pattern shields (e.g., ignore external <span class="kbd">SYSTEM</span> or <span class="kbd">DEVELOPER</span> text).</li>
+              <li>Task schemas / JSON output with allowlisted fields.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Retrieval Hygiene</h3>
+            <ul>
+              <li>Embed provenance, timestamps, and content hashes with chunks.</li>
+              <li>Strip active content; neutralize prompt‑like markup.</li>
+              <li>Blocklist/allowlist by domain, mime‑type, and content type.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Post‑Processing</h3>
+            <ul>
+              <li>Classifiers for secrets, toxicity, PII, and executable artifacts.</li>
+              <li>Auto‑citation for claim sentences; confidence labels.</li>
+              <li>Human review queues for high‑impact actions.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="use-cases" class="card">
+        <h2>Use Cases</h2>
+        <div class="two">
+          <div>
+            <h3>Enterprise Assistant</h3>
+            <ul>
+              <li>Secure RAG over policy docs; all answers include citations.</li>
+              <li>PII redaction before answers are logged or shared.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Developer Copilot</h3>
+            <ul>
+              <li>Never execute fetched code; explain and propose diffs only.</li>
+              <li>Secret scanner and license classifier before commit suggestions.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="checklists" class="card">
+        <h2>Implementation Checklists</h2>
+        <h3>Minimal Viable OAP (two weeks)</h3>
+        <ul>
+          <li>Define allowed domains and data classes.</li>
+          <li>Add input sanitizer + injection detector to your gateway.</li>
+          <li>Enable output filters (PII, secrets, toxicity).</li>
+          <li>Require citations for non‑trivial claims.</li>
+          <li>Turn on structured logging for prompts, context sources, and decisions.</li>
+        </ul>
+        <h3>Production Hardening</h3>
+        <ul>
+          <li>Per‑tool scopes and tokens; rotate & audit.</li>
+          <li>Freshness windows (e.g., 90 days) and source trust scores in RAG.</li>
+          <li>Automated red‑team prompts + regression suite on each model update.</li>
+          <li>Human‑in‑the‑loop thresholds and SLAs for review queues.</li>
+          <li>Signed responses with request ids and content hashes.</li>
+        </ul>
+      </section>
+
+      <section id="faq" class="card">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Is OAP model‑specific?</summary>
+          <p>No. It’s a system‑level protocol you can apply to OpenAI, Claude, Gemini, Mistral, local models, and agents.</p>
+        </details>
+        <details>
+          <summary>Does OAP reduce hallucinations?</summary>
+          <p>Yes—indirectly. Evidence‑bound prompting and citation requirements discourage unsupported claims and surface uncertainty.</p>
+        </details>
+        <details>
+          <summary>Will this slow responses?</summary>
+          <p>Lightweight checks add minimal latency; most controls are simple classifiers, regex passes, or policy lookups.</p>
+        </details>
+      </section>
+
+      <section id="resources" class="card">
+        <h2>Resources & Downloads</h2>
+        <p id="download">Grab the PDF or browse mirrors for resilience and discoverability.</p>
+        <ul>
+          <li><a href="#" title="Local copy placeholder">The Output Alignment Protocol (OAP) – PDF</a> (attach your file path or public URL)</li>
+          <li>Mirrors: <a href="#">GitHub</a> • <a href="#">Internet Archive</a> • <a href="#">Zenodo (DOI)</a> • <a href="#">SlideShare</a> • <a href="#">Issuu</a></li>
+        </ul>
+        <p class="small">License: <strong>CC BY 4.0</strong>. © <span id="year"></span> Shay Weiss. Contributions welcome.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="grid" style="padding-bottom:20px">
+      <div class="small">Made with ❤️ for the AI community. OAP is an evolving framework—use, adapt, and share with attribution.</div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
